@@ -26,7 +26,7 @@ public class SiteList
         return sites.Count;
     }
 
-    public Site Next()
+    public Site? Next()
     {
         if (!sorted)
         {

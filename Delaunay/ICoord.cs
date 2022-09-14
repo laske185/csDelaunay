@@ -1,7 +1,6 @@
-﻿namespace csDelaunay
+﻿namespace csDelaunay.Delaunay;
+
+public interface ICoord
 {
-    public interface ICoord
-    {
-        Vector2 Coord { get; set; }
-    }
+    Vector2 Coord { get; set; }
 }

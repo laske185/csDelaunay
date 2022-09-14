@@ -21,10 +21,10 @@ public class EdgeList
         // Two dummy Halfedges:
         leftEnd = Halfedge.CreateDummy();
         rightEnd = Halfedge.CreateDummy();
-        leftEnd.edgeListLeftNeighbor = null;
-        leftEnd.edgeListRightNeighbor = rightEnd;
-        rightEnd.edgeListLeftNeighbor = leftEnd;
-        rightEnd.edgeListRightNeighbor = null;
+        leftEnd.EdgeListLeftNeighbor = null;
+        leftEnd.EdgeListRightNeighbor = rightEnd;
+        rightEnd.EdgeListLeftNeighbor = leftEnd;
+        rightEnd.EdgeListRightNeighbor = null;
         hash[0] = leftEnd;
         hash[hashSize - 1] = rightEnd;
     }
@@ -42,7 +42,7 @@ public class EdgeList
         while (halfedge != rightEnd)
         {
             prevHe = halfedge;
-            halfedge = halfedge.edgeListRightNeighbor;
+            halfedge = halfedge.EdgeListRightNeighbor;
             prevHe.Dispose();
         }
         leftEnd = null;
@@ -60,10 +60,10 @@ public class EdgeList
 
     public void Insert(Halfedge lb, Halfedge newHalfedge)
     {
-        newHalfedge.edgeListLeftNeighbor = lb;
-        newHalfedge.edgeListRightNeighbor = lb.edgeListRightNeighbor;
-        lb.edgeListRightNeighbor.edgeListLeftNeighbor = newHalfedge;
-        lb.edgeListRightNeighbor = newHalfedge;
+        newHalfedge.EdgeListLeftNeighbor = lb;
+        newHalfedge.EdgeListRightNeighbor = lb.EdgeListRightNeighbor;
+        lb.EdgeListRightNeighbor.EdgeListLeftNeighbor = newHalfedge;
+        lb.EdgeListRightNeighbor = newHalfedge;
     }
 
     /*
@@ -74,10 +74,10 @@ public class EdgeList
 
     public void Remove(Halfedge halfedge)
     {
-        halfedge.edgeListLeftNeighbor.edgeListRightNeighbor = halfedge.edgeListRightNeighbor;
-        halfedge.edgeListRightNeighbor.edgeListLeftNeighbor = halfedge.edgeListLeftNeighbor;
-        halfedge.edge = Edge.DELETED;
-        halfedge.edgeListLeftNeighbor = halfedge.edgeListRightNeighbor = null;
+        halfedge.EdgeListLeftNeighbor.EdgeListRightNeighbor = halfedge.EdgeListRightNeighbor;
+        halfedge.EdgeListRightNeighbor.EdgeListLeftNeighbor = halfedge.EdgeListLeftNeighbor;
+        halfedge.Edge = Edge.DELETED;
+        halfedge.EdgeListLeftNeighbor = halfedge.EdgeListRightNeighbor = null;
     }
 
     /*
@@ -115,15 +115,15 @@ public class EdgeList
         {
             do
             {
-                halfedge = halfedge.edgeListRightNeighbor;
+                halfedge = halfedge.EdgeListRightNeighbor;
             } while (halfedge != rightEnd && halfedge.IsLeftOf(p));
-            halfedge = halfedge.edgeListLeftNeighbor;
+            halfedge = halfedge.EdgeListLeftNeighbor;
         }
         else
         {
             do
             {
-                halfedge = halfedge.edgeListLeftNeighbor;
+                halfedge = halfedge.EdgeListLeftNeighbor;
             } while (halfedge != leftEnd && !halfedge.IsLeftOf(p));
         }
 
@@ -145,7 +145,7 @@ public class EdgeList
             return null;
         }
         halfedge = hash[b];
-        if (halfedge != null && halfedge.edge == Edge.DELETED)
+        if (halfedge != null && halfedge.Edge == Edge.DELETED)
         {
             // Hash table points to deleted halfedge. Patch as necessary
             hash[b] = null;

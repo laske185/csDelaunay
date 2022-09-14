@@ -53,8 +53,8 @@ public class Vertex : ICoord
         float determinant, intersectionX, intersectionY;
         bool rightOfSite;
 
-        edge0 = halfedge0.edge;
-        edge1 = halfedge1.edge;
+        edge0 = halfedge0.Edge;
+        edge1 = halfedge1.Edge;
         if (edge0 == null || edge1 == null)
         {
             return null;
@@ -85,8 +85,8 @@ public class Vertex : ICoord
             edge = edge1;
         }
         rightOfSite = intersectionX >= edge.RightSite.x;
-        if (rightOfSite && halfedge.leftRight == LR.LEFT ||
-            !rightOfSite && halfedge.leftRight == LR.RIGHT)
+        if (rightOfSite && halfedge.LeftRight == LR.LEFT ||
+            !rightOfSite && halfedge.LeftRight == LR.RIGHT)
         {
             return null;
         }

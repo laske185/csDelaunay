@@ -28,14 +28,11 @@ public class Voronoi
         LloydRelaxation(lloydIterations);
     }
 
-    public List<Edge> Edges
-    { get { return edges; } }
+    public List<Edge> Edges => edges;
 
-    public RectangleF PlotBounds
-    { get { return plotBounds; } }
+    public RectangleF PlotBounds => plotBounds;
 
-    public Dictionary<Vector2, Site> SitesIndexedByLocation
-    { get { return sitesIndexedByLocation; } }
+    public Dictionary<Vector2, Site> SitesIndexedByLocation => sitesIndexedByLocation;
 
     public static int CompareByYThenX(Site s1, Site s2)
     {
@@ -298,7 +295,7 @@ public class Voronoi
                 // Step 8:
                 lbnd = edgeList.EdgeListLeftNeighbor(newSite.Coord);    // The halfedge just to the left of newSite
                                                                         //UnityEngine.Debug.Log("lbnd: " + lbnd);
-                rbnd = lbnd.edgeListRightNeighbor;      // The halfedge just to the right
+                rbnd = lbnd.EdgeListRightNeighbor;      // The halfedge just to the right
                                                         //UnityEngine.Debug.Log("rbnd: " + rbnd);
                 bottomSite = RightRegion(lbnd, bottomMostSite);         // This is the same as leftRegion(rbnd)
                                                                         // This Site determines the region containing the new site
@@ -320,8 +317,8 @@ public class Voronoi
                 {
                     vertices.Add(vertex);
                     heap.Remove(lbnd);
-                    lbnd.vertex = vertex;
-                    lbnd.ystar = vertex.y + newSite.Dist(vertex);
+                    lbnd.Vertex = vertex;
+                    lbnd.YStar = vertex.y + newSite.Dist(vertex);
                     heap.Insert(lbnd);
                 }
 
@@ -336,8 +333,8 @@ public class Voronoi
                 if ((vertex = Vertex.Intersect(bisector, rbnd)) != null)
                 {
                     vertices.Add(vertex);
-                    bisector.vertex = vertex;
-                    bisector.ystar = vertex.y + newSite.Dist(vertex);
+                    bisector.Vertex = vertex;
+                    bisector.YStar = vertex.y + newSite.Dist(vertex);
                     heap.Insert(bisector);
                 }
 
@@ -347,19 +344,19 @@ public class Voronoi
             {
                 // Intersection is smallest
                 lbnd = heap.ExtractMin();
-                llbnd = lbnd.edgeListLeftNeighbor;
-                rbnd = lbnd.edgeListRightNeighbor;
-                rrbnd = rbnd.edgeListRightNeighbor;
+                llbnd = lbnd.EdgeListLeftNeighbor;
+                rbnd = lbnd.EdgeListRightNeighbor;
+                rrbnd = rbnd.EdgeListRightNeighbor;
                 bottomSite = LeftRegion(lbnd, bottomMostSite);
                 topSite = RightRegion(rbnd, bottomMostSite);
                 // These three sites define a Delaunay triangle
                 // (not actually using these for anything...)
                 // triangles.Add(new Triangle(bottomSite, topSite, RightRegion(lbnd, bottomMostSite)));
 
-                v = lbnd.vertex;
+                v = lbnd.Vertex;
                 v.SetIndex();
-                lbnd.edge.SetVertex(lbnd.leftRight, v);
-                rbnd.edge.SetVertex(rbnd.leftRight, v);
+                lbnd.Edge.SetVertex(lbnd.LeftRight, v);
+                rbnd.Edge.SetVertex(rbnd.LeftRight, v);
                 edgeList.Remove(lbnd);
                 heap.Remove(rbnd);
                 edgeList.Remove(rbnd);
@@ -381,15 +378,15 @@ public class Voronoi
                 {
                     vertices.Add(vertex);
                     heap.Remove(llbnd);
-                    llbnd.vertex = vertex;
-                    llbnd.ystar = vertex.y + bottomSite.Dist(vertex);
+                    llbnd.Vertex = vertex;
+                    llbnd.YStar = vertex.y + bottomSite.Dist(vertex);
                     heap.Insert(llbnd);
                 }
                 if ((vertex = Vertex.Intersect(bisector, rrbnd)) != null)
                 {
                     vertices.Add(vertex);
-                    bisector.vertex = vertex;
-                    bisector.ystar = vertex.y + bottomSite.Dist(vertex);
+                    bisector.Vertex = vertex;
+                    bisector.YStar = vertex.y + bottomSite.Dist(vertex);
                     heap.Insert(bisector);
                 }
             }
@@ -424,21 +421,21 @@ public class Voronoi
 
     private Site LeftRegion(Halfedge he, Site bottomMostSite)
     {
-        var edge = he.edge;
+        var edge = he.Edge;
         if (edge == null)
         {
             return bottomMostSite;
         }
-        return edge.Site(he.leftRight);
+        return edge.Site(he.LeftRight);
     }
 
     private Site RightRegion(Halfedge he, Site bottomMostSite)
     {
-        var edge = he.edge;
+        var edge = he.Edge;
         if (edge == null)
         {
             return bottomMostSite;
         }
-        return edge.Site(LR.Other(he.leftRight));
+        return edge.Site(LR.Other(he.LeftRight));
     }
 }

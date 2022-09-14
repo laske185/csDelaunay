@@ -1,22 +1,20 @@
-﻿using csDelaunay.Delaunay;
+﻿namespace csDelaunay.Delaunay;
 
-namespace csDelaunay
+public class Triangle
 {
+    private readonly List<Site> sites = new(3);
 
-    public class Triangle {
+    public Triangle(Site a, Site b, Site c)
+    {
+        sites.Add(a);
+        sites.Add(b);
+        sites.Add(c);
+    }
 
-		private List<Site> sites;
-		public List<Site> Sites {get{return sites;}}
+    public List<Site> Sites => sites;
 
-		public Triangle(Site a, Site b, Site c) {
-			sites = new List<Site>();
-			sites.Add(a);
-			sites.Add(b);
-			sites.Add(c);
-		}
-
-		public void Dispose() {
-			sites.Clear();
-		}
-	}
+    public void Dispose()
+    {
+        sites.Clear();
+    }
 }
