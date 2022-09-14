@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace csDelaunay
+﻿namespace csDelaunay
 {
-	public class LRCollection<T>
+    public class LRCollection<T>
 	{
 		private T left;
 		private T right;

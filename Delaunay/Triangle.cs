@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using csDelaunay.Delaunay;
 
-namespace csDelaunay {
+namespace csDelaunay
+{
 
-	public class Triangle {
+    public class Triangle {
 
 		private List<Site> sites;
 		public List<Site> Sites {get{return sites;}}

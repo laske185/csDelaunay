@@ -1,109 +1,122 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using csDelaunay.Geometries;
 
-namespace csDelaunay {
+namespace csDelaunay.Delaunay;
 
-	public class SiteList {
+public class SiteList
+{
+    private readonly List<Site> sites = new();
+    private int currentIndex;
 
-		private List<Site> sites;
-		private int currentIndex;
+    private bool sorted = false;
 
-		private bool sorted;
+    public void Dispose()
+    {
+        sites.Clear();
+    }
 
-		public SiteList() {
-			sites = new List<Site>();
-			sorted = false;
-		}
+    public int Add(Site site)
+    {
+        sorted = false;
+        sites.Add(site);
+        return sites.Count;
+    }
 
-		public void Dispose() {
-			sites.Clear();
-		}
+    public int Count()
+    {
+        return sites.Count;
+    }
 
-		public int Add(Site site) {
-			sorted = false;
-			sites.Add(site);
-			return sites.Count;
-		}
+    public Site Next()
+    {
+        if (!sorted)
+        {
+            throw new Exception("SiteList.Next(): sites have not been sorted");
+        }
+        if (currentIndex < sites.Count)
+        {
+            return sites[currentIndex++];
+        }
+        else
+        {
+            return null;
+        }
+    }
 
-		public int Count() {
-			return sites.Count;
-		}
+    public RectangleF GetSitesBounds()
+    {
+        if (!sorted)
+        {
+            SortList();
+            ResetListIndex();
+        }
+        float xmin, xmax, ymin, ymax;
+        if (sites.Count == 0)
+        {
+            return RectangleF.Empty;
+        }
+        xmin = float.MaxValue;
+        xmax = float.MinValue;
+        foreach (var site in sites)
+        {
+            if (site.x < xmin) xmin = site.x;
+            if (site.x > xmax) xmax = site.x;
+        }
+        // here's where we assume that the sites have been sorted on y:
+        ymin = sites[0].y;
+        ymax = sites[sites.Count - 1].y;
 
-		public Site Next() {
-			if (!sorted) {
-				throw new Exception("SiteList.Next(): sites have not been sorted");
-			}
-			if (currentIndex < sites.Count) {
-				return sites[currentIndex++];
-			} else {
-				return null;
-			}
-		}
+        return new RectangleF(xmin, ymin, xmax - xmin, ymax - ymin);
+    }
 
-		public Rectf GetSitesBounds() {
-			if (!sorted) {
-				SortList();
-				ResetListIndex();
-			}
-			float xmin, xmax, ymin, ymax;
-			if (sites.Count == 0) {
-				return Rectf.zero;
-			}
-			xmin = float.MaxValue;
-			xmax = float.MinValue;
-			foreach (Site site in sites) {
-				if (site.x < xmin) xmin = site.x;
-				if (site.x > xmax) xmax = site.x;
-			}
-			// here's where we assume that the sites have been sorted on y:
-			ymin = sites[0].y;
-			ymax = sites[sites.Count-1].y;
+    public List<Vector2> SiteCoords()
+    {
+        var coords = new List<Vector2>();
+        foreach (var site in sites)
+        {
+            coords.Add(site.Coord);
+        }
 
-			return new Rectf(xmin, ymin, xmax - xmin, ymax - ymin);
-		}
+        return coords;
+    }
 
-		public List<Vector2f> SiteCoords() {
-			List<Vector2f> coords = new List<Vector2f>();
-			foreach (Site site in sites) {
-				coords.Add(site.Coord);
-			}
+    /*
+     *
+     * @return the largest circle centered at each site that fits in its region;
+     * if the region is infinite, return a circle of radius 0.
+     */
 
-			return coords;
-		}
+    public List<Circle> Circles()
+    {
+        var circles = new List<Circle>();
+        foreach (var site in sites)
+        {
+            float radius = 0;
+            var nearestEdge = site.NearestEdge();
 
-		/*
-		 * 
-		 * @return the largest circle centered at each site that fits in its region;
-		 * if the region is infinite, return a circle of radius 0.
-		 */
-		public List<Circle> Circles() {
-			List<Circle> circles = new List<Circle>();
-			foreach (Site site in sites) {
-				float radius = 0;
-				Edge nearestEdge = site.NearestEdge();
+            if (!nearestEdge.IsPartOfConvexHull()) radius = nearestEdge.SitesDistance() * 0.5f;
+            circles.Add(new Circle(site.x, site.y, radius));
+        }
+        return circles;
+    }
 
-				if (!nearestEdge.IsPartOfConvexHull()) radius = nearestEdge.SitesDistance() * 0.5f;
-				circles.Add(new Circle(site.x,site.y, radius));
-			}
-			return circles;
-		}
+    public List<List<Vector2>> Regions(RectangleF plotBounds)
+    {
+        var regions = new List<List<Vector2>>();
+        foreach (var site in sites)
+        {
+            regions.Add(site.Region(plotBounds));
+        }
+        return regions;
+    }
 
-		public List<List<Vector2f>> Regions(Rectf plotBounds) {
-			List<List<Vector2f>> regions = new List<List<Vector2f>>();
-			foreach (Site site in sites) {
-				regions.Add(site.Region(plotBounds));
-			}
-			return regions;
-		}
+    public void ResetListIndex()
+    {
+        currentIndex = 0;
+    }
 
-		public void ResetListIndex() {
-			currentIndex = 0;
-		}
-
-		public void SortList() {
-			Site.SortSites(sites);
-			sorted = true;
-		}
-	}
+    public void SortList()
+    {
+        Site.SortSites(sites);
+        sorted = true;
+    }
 }

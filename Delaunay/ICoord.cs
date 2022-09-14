@@ -1,8 +1,7 @@
-﻿using System.Collections;
-
-namespace csDelaunay {
-	public interface ICoord {
-
-		Vector2f Coord {get;set;}
-	}
+﻿namespace csDelaunay
+{
+    public interface ICoord
+    {
+        Vector2 Coord { get; set; }
+    }
 }

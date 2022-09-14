@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using csDelaunay.Delaunay;
 
-namespace csDelaunay {
+namespace csDelaunay
+{
 
-	public class EdgeReorderer {
+    public class EdgeReorderer {
 
 		private List<Edge> edges;
 		private List<LR> edgeOrientations;
