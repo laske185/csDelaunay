@@ -2,7 +2,7 @@
 
 namespace csDelaunay.Delaunay;
 
-public class Voronoi
+public class Voronoi : IDisposable
 {
     private SiteList sites;
     private List<Triangle> triangles;
