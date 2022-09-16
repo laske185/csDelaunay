@@ -244,8 +244,25 @@ public class Site : ICoord
     private void ReorderEdges()
     {
         var reorderer = new EdgeReorderer(edges, typeof(Vertex));
-        edges = reorderer.Edges;
-        edgeOrientations = reorderer.EdgeOrientations;
+        if (edges == null)
+        {
+            edges = new();
+        }
+        else
+        {
+            edges.Clear();
+        }
+        edges.AddRange(reorderer.Edges);
+
+        if (edgeOrientations == null)
+        {
+            edgeOrientations = new();
+        }
+        else
+        {
+            edgeOrientations.Clear();
+        }
+        edgeOrientations.AddRange(reorderer.EdgeOrientations);
         reorderer.Dispose();
     }
 
